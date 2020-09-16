@@ -1,0 +1,16 @@
+name: dio_range_download
+description: A download tool library that supports resumable downloading and segmented downloading.
+version: 0.0.1
+homepage: https://github.com/qiaoshouqing/dio_range_download
+author: qiaoshouqing <1143878969@qq.com>
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  dio: ^3.0.10
+
+dev_dependencies:
+  test: ^1.5.1
+  pedantic: ^1.8.0
+  test_coverage: ^0.4.1
