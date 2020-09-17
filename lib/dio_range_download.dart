@@ -11,11 +11,15 @@ class RangeDownload {
       savePath, {
         ProgressCallback onReceiveProgress,
         int maxChunk = 6,
+        Dio dio,
       }) async {
     const firstChunkSize = 102;
 
     int total = 0;
-    var dio = Dio();
+    if(dio == null) {
+      dio = Dio();
+      dio.options.connectTimeout = 60 * 1000;
+    }
     var progress = <int>[];
     var progressInit = <int>[];
 
