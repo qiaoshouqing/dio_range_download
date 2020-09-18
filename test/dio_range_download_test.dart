@@ -13,6 +13,8 @@ rangeDownload() async {
       "http://music.163.com/song/media/outer/url?id=1357233444.mp3";
   var savePath = "download_result/music.mp3";
   await RangeDownload.downloadWithChunks(url, savePath,
+      // maxChunk: 6,
+      // dio: Dio(),//Optional parameters "dio".Convenient to customize request settings.
       onReceiveProgress: (received, total) {
     if (!isStarted) {
       startTime = DateTime.now();
