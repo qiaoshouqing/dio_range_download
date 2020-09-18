@@ -5,4 +5,5 @@
 - modify README.md
 - Optional parameters "dio".Convenient to customize request settings.
 
-
+## [0.1.0] - 2020.9.18
+- Fix the situation where the download is interrupted twice or more.

@@ -1,7 +1,6 @@
 library dio_range_download;
 
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 class RangeDownload {
@@ -50,7 +49,7 @@ class RangeDownload {
         if(received >= rangeTotal) {
           var path = savePath + "temp${no}";
           var oldPath = savePath + "temp${no}_pre";
-          File oldFile = new File(oldPath);
+          File oldFile = File(oldPath);
           if(oldFile.existsSync()) {
             await mergeFiles(oldPath, path, path);
           }
@@ -66,13 +65,18 @@ class RangeDownload {
       int initLength = 0;
       --end;
       var path = savePath + "temp$no";
-      File targetFile = new File(path);
+      File targetFile = File(path);
       if(await targetFile.exists() && isMerge) {
         print("good job start:${start} length:${File(path).lengthSync()}");
         if(start + await targetFile.length() < end) {
           initLength = await targetFile.length();
           start += initLength;
-          await targetFile.rename(path + "_pre");
+          var preFile = File(path + "_pre");
+          if(await preFile.exists()) {
+            mergeFiles(preFile, targetFile, preFile);
+          } else {
+            await targetFile.rename(preFile.path);
+          }
         } else {
           await targetFile.delete();
         }
