@@ -198,7 +198,7 @@ Response response = await downloadChunk(url, 0, firstChunkSize, 0, isMerge: fals
 
 代码已开源到github，并可能会不断改动，具体代码可以直接前往github：https://github.com/qiaoshouqing/dio_range_download 阅读观看，并欢迎Star。
 
-断点续传库的地址是：https://pub.dev/packages/dio_range_download，欢迎使用，欢迎like。
+断点续传库的地址是：https://pub.dev/packages/dio_range_download ，欢迎使用，欢迎like。
 
 如何上传到pub.dev就暂且不说了，步骤很简单，最大的困难是KXSW。
 

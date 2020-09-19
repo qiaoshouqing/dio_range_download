@@ -1,6 +1,7 @@
 # dio_range_download
 
 A download tool library that supports resumable downloading and segmented downloading.
+https://pub.dev/packages/dio_range_download
 
 ## Theory
 This library is based on the range protocol header of the http1.1 version to achieve segmented download and resumable download.
