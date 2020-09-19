@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dio_range_download/dio_range_download.dart';
 
 main() async {
@@ -12,7 +13,8 @@ rangeDownload() async {
   var url =
       "http://music.163.com/song/media/outer/url?id=1357233444.mp3";
   var savePath = "download_result/music.mp3";
-  await RangeDownload.downloadWithChunks(url, savePath,
+  Response res = await RangeDownload.downloadWithChunks(url, savePath,
+      //isRangeDownload: false,//Support normal download
       // maxChunk: 6,
       // dio: Dio(),//Optional parameters "dio".Convenient to customize request settings.
       onReceiveProgress: (received, total) {
@@ -32,4 +34,7 @@ rangeDownload() async {
           (duration ~/ 60).toString() + "m" + (duration % 60).toString() + "s");
     }
   });
+  print(res.statusCode);
+  print(res.statusMessage);
+  print(res.data);
 }

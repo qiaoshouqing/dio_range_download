@@ -10,3 +10,7 @@
 
 ## [0.1.1] - 2020.9.19
 - Bug fix.
+
+## [0.1.2] - 2020.9.19
+- Bug fix.
+- Support normal download

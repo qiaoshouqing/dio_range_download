@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 class RangeDownload {
-  static Future downloadWithChunks(
+  static Future<Response> downloadWithChunks(
     url,
     savePath, {
+    bool isRangeDownload = true,
     ProgressCallback onReceiveProgress,
     int maxChunk = 6,
     Dio dio,
@@ -93,39 +94,61 @@ class RangeDownload {
       );
     }
 
-    Response response =
-        await downloadChunk(url, 0, firstChunkSize, 0, isMerge: false);
-    if (response.statusCode == 206) {
-      print("This http protocol support range download");
-      total = int.parse(response.headers
-          .value(HttpHeaders.contentRangeHeader)
-          .split("/")
-          .last);
-      int reserved = total -
-          int.parse(response.headers.value(HttpHeaders.contentLengthHeader));
-      int chunk = (reserved / firstChunkSize).ceil() + 1;
-      if (chunk > 1) {
-        int chunkSize = firstChunkSize;
-        if (chunk > maxChunk + 1) {
-          chunk = maxChunk + 1;
-          chunkSize = (reserved / maxChunk).ceil();
-        }
-        var futures = <Future>[];
-        for (int i = 0; i < maxChunk; ++i) {
-          int start = firstChunkSize + i * chunkSize;
-          int end;
-          if (i == maxChunk - 1) {
-            end = total;
-          } else {
-            end = start + chunkSize;
+    if (isRangeDownload) {
+      Response response =
+          await downloadChunk(url, 0, firstChunkSize, 0, isMerge: false);
+      if (response.statusCode == 206) {
+        print("This http protocol support range download");
+        total = int.parse(response.headers
+            .value(HttpHeaders.contentRangeHeader)
+            .split("/")
+            .last);
+        int reserved = total -
+            int.parse(response.headers.value(HttpHeaders.contentLengthHeader));
+        int chunk = (reserved / firstChunkSize).ceil() + 1;
+        if (chunk > 1) {
+          int chunkSize = firstChunkSize;
+          if (chunk > maxChunk + 1) {
+            chunk = maxChunk + 1;
+            chunkSize = (reserved / maxChunk).ceil();
           }
-          futures.add(downloadChunk(url, start, end, i + 1));
+          var futures = <Future>[];
+          for (int i = 0; i < maxChunk; ++i) {
+            int start = firstChunkSize + i * chunkSize;
+            int end;
+            if (i == maxChunk - 1) {
+              end = total;
+            } else {
+              end = start + chunkSize;
+            }
+            futures.add(downloadChunk(url, start, end, i + 1));
+          }
+          await Future.wait(futures);
         }
-        await Future.wait(futures);
+        await mergeTempFiles(chunk);
+        return new Response(
+          statusCode: 200,
+          statusMessage: "Download sucess.",
+          data: "Download sucess.",
+        );
+      } else if (response.statusCode == 200) {
+        print(
+            "The protocol does not support resumable downloads, and regular downloads will be used.");
+        return dio.download(
+          url,
+          savePath,
+          onReceiveProgress: onReceiveProgress,
+        );
+      } else {
+        print("The request encountered a problem, please handle it yourself");
+        return response;
       }
-      await mergeTempFiles(chunk);
     } else {
-      print("This http protocol don't support range download");
+      return dio.download(
+        url,
+        savePath,
+        onReceiveProgress: onReceiveProgress,
+      );
     }
   }
 }
