@@ -7,3 +7,6 @@
 
 ## [0.1.0] - 2020.9.18
 - Fix the situation where the download is interrupted twice or more.
+
+## [0.1.1] - 2020.9.19
+- Bug fix.

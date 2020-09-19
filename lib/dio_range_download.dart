@@ -4,18 +4,17 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 class RangeDownload {
-
   static Future downloadWithChunks(
-      url,
-      savePath, {
-        ProgressCallback onReceiveProgress,
-        int maxChunk = 6,
-        Dio dio,
-      }) async {
+    url,
+    savePath, {
+    ProgressCallback onReceiveProgress,
+    int maxChunk = 6,
+    Dio dio,
+  }) async {
     const firstChunkSize = 102;
 
     int total = 0;
-    if(dio == null) {
+    if (dio == null) {
       dio = Dio();
       dio.options.connectTimeout = 60 * 1000;
     }
@@ -24,7 +23,7 @@ class RangeDownload {
 
     Future mergeTempFiles(chunk) async {
       File f = File(savePath + "temp0");
-      IOSink ioSink= f.openWrite(mode: FileMode.writeOnlyAppend);
+      IOSink ioSink = f.openWrite(mode: FileMode.writeOnlyAppend);
       for (int i = 1; i < chunk; ++i) {
         File _f = File(savePath + "temp$i");
         await ioSink.addStream(_f.openRead());
@@ -37,7 +36,7 @@ class RangeDownload {
     Future mergeFiles(file1, file2, targetFile) async {
       File f1 = File(file1);
       File f2 = File(file2);
-      IOSink ioSink= f1.openWrite(mode: FileMode.writeOnlyAppend);
+      IOSink ioSink = f1.openWrite(mode: FileMode.writeOnlyAppend);
       await ioSink.addStream(f2.openRead());
       await f2.delete();
       await ioSink.close();
@@ -46,11 +45,11 @@ class RangeDownload {
 
     createCallback(no) {
       return (int received, rangeTotal) async {
-        if(received >= rangeTotal) {
+        if (received >= rangeTotal) {
           var path = savePath + "temp${no}";
           var oldPath = savePath + "temp${no}_pre";
           File oldFile = File(oldPath);
-          if(oldFile.existsSync()) {
+          if (oldFile.existsSync()) {
             await mergeFiles(oldPath, path, path);
           }
         }
@@ -61,19 +60,20 @@ class RangeDownload {
       };
     }
 
-    Future<Response> downloadChunk(url, start, end, no, {isMerge = true}) async {
+    Future<Response> downloadChunk(url, start, end, no,
+        {isMerge = true}) async {
       int initLength = 0;
       --end;
       var path = savePath + "temp$no";
       File targetFile = File(path);
-      if(await targetFile.exists() && isMerge) {
+      if (await targetFile.exists() && isMerge) {
         print("good job start:${start} length:${File(path).lengthSync()}");
-        if(start + await targetFile.length() < end) {
+        if (start + await targetFile.length() < end) {
           initLength = await targetFile.length();
           start += initLength;
           var preFile = File(path + "_pre");
-          if(await preFile.exists()) {
-            mergeFiles(preFile, targetFile, preFile);
+          if (await preFile.exists()) {
+            await mergeFiles(preFile, targetFile, preFile);
           } else {
             await targetFile.rename(preFile.path);
           }
@@ -93,11 +93,14 @@ class RangeDownload {
       );
     }
 
-    Response response = await downloadChunk(url, 0, firstChunkSize, 0, isMerge: false);
+    Response response =
+        await downloadChunk(url, 0, firstChunkSize, 0, isMerge: false);
     if (response.statusCode == 206) {
       print("This http protocol support range download");
-      total = int.parse(
-          response.headers.value(HttpHeaders.contentRangeHeader).split("/").last);
+      total = int.parse(response.headers
+          .value(HttpHeaders.contentRangeHeader)
+          .split("/")
+          .last);
       int reserved = total -
           int.parse(response.headers.value(HttpHeaders.contentLengthHeader));
       int chunk = (reserved / firstChunkSize).ceil() + 1;
@@ -111,7 +114,7 @@ class RangeDownload {
         for (int i = 0; i < maxChunk; ++i) {
           int start = firstChunkSize + i * chunkSize;
           int end;
-          if(i == maxChunk - 1) {
+          if (i == maxChunk - 1) {
             end = total;
           } else {
             end = start + chunkSize;
