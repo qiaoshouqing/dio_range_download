@@ -74,7 +74,9 @@ class RangeDownload {
           start += initLength;
           var preFile = File(path + "_pre");
           if (await preFile.exists()) {
-            await mergeFiles(preFile, targetFile, preFile);
+            initLength += await preFile.length();
+            start += await preFile.length();
+            await mergeFiles(preFile.path, targetFile.path, preFile.path);
           } else {
             await targetFile.rename(preFile.path);
           }
@@ -126,7 +128,7 @@ class RangeDownload {
           await Future.wait(futures);
         }
         await mergeTempFiles(chunk);
-        return new Response(
+        return Response(
           statusCode: 200,
           statusMessage: "Download sucess.",
           data: "Download sucess.",
