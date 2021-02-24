@@ -16,4 +16,4 @@
 - Support normal download
 
 ## [1.0.0] - 2021.2.24
-- Add paramter "cancelToken".
+- Add parameter "cancelToken".
