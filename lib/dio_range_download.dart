@@ -11,6 +11,7 @@ class RangeDownload {
     ProgressCallback onReceiveProgress,
     int maxChunk = 6,
     Dio dio,
+    CancelToken cancelToken,
   }) async {
     const firstChunkSize = 102;
 
@@ -93,6 +94,7 @@ class RangeDownload {
         options: Options(
           headers: {"range": "bytes=$start-$end"},
         ),
+        cancelToken: cancelToken,
       );
     }
 
@@ -140,6 +142,7 @@ class RangeDownload {
           url,
           savePath,
           onReceiveProgress: onReceiveProgress,
+          cancelToken: cancelToken,
         );
       } else {
         print("The request encountered a problem, please handle it yourself");
@@ -150,6 +153,7 @@ class RangeDownload {
         url,
         savePath,
         onReceiveProgress: onReceiveProgress,
+        cancelToken: cancelToken,
       );
     }
   }

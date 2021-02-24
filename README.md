@@ -26,10 +26,12 @@ rangeDownload() async {
   var url =
       "http://music.163.com/song/media/outer/url?id=1357233444.mp3";
   var savePath = "download_result/music.mp3";
+  // CancelToken cancelToken = CancelToken();
   Response res = await RangeDownload.downloadWithChunks(url, savePath,
       //isRangeDownload: false,//Support normal download
       // maxChunk: 6,
       // dio: Dio(),//Optional parameters "dio".Convenient to customize request settings.
+      // cancelToken: cancelToken,
       onReceiveProgress: (received, total) {
     if (!isStarted) {
       startTime = DateTime.now();
@@ -37,6 +39,9 @@ rangeDownload() async {
     }
     if (total != -1) {
       print("${(received / total * 100).floor()}%");
+      // if (received / total * 100.floor() > 50) {
+      //   cancelToken.cancel();
+      // }
     }
     if ((received / total * 100).floor() >= 100) {
       var duration = (DateTime.now().millisecondsSinceEpoch -
