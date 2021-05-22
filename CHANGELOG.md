@@ -14,3 +14,6 @@
 ## [0.1.2-0.1.3] - 2020.9.19
 - Bug fix.
 - Support normal download
+
+## [1.0.0] - 2021.2.24
+- Add parameter "cancelToken".
