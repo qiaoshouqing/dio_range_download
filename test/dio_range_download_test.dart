@@ -6,7 +6,7 @@ main() async {
   rangeDownload();
 }
 
-DateTime startTime;
+late DateTime startTime;
 rangeDownload() async {
   print("start");
   bool isStarted = false;

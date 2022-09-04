@@ -4,7 +4,7 @@ version: 1.0.1
 homepage: https://github.com/qiaoshouqing/dio_range_download
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   dio: ^4.0.0
