@@ -8,10 +8,10 @@ class RangeDownload {
     url,
     savePath, {
     bool isRangeDownload = true,
-    ProgressCallback onReceiveProgress,
+    ProgressCallback? onReceiveProgress,
     int maxChunk = 6,
-    Dio dio,
-    CancelToken cancelToken,
+    Dio? dio,
+    CancelToken? cancelToken,
   }) async {
     const firstChunkSize = 102;
 
@@ -87,7 +87,7 @@ class RangeDownload {
       }
       progress.add(initLength);
       progressInit.add(initLength);
-      return dio.download(
+      return dio!.download(
         url,
         path,
         onReceiveProgress: createCallback(no),
@@ -104,11 +104,11 @@ class RangeDownload {
       if (response.statusCode == 206) {
         print("This http protocol support range download");
         total = int.parse(response.headers
-            .value(HttpHeaders.contentRangeHeader)
+            .value(HttpHeaders.contentRangeHeader)!
             .split("/")
             .last);
         int reserved = total -
-            int.parse(response.headers.value(HttpHeaders.contentLengthHeader));
+            int.parse(response.headers.value(HttpHeaders.contentLengthHeader)!);
         int chunk = (reserved / firstChunkSize).ceil() + 1;
         if (chunk > 1) {
           int chunkSize = firstChunkSize;
