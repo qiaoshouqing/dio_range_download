@@ -12,6 +12,7 @@ class RangeDownload {
     int maxChunk = 6,
     Dio? dio,
     CancelToken? cancelToken,
+    Map<String,String> headers = {},
   }) async {
     const firstChunkSize = 102;
 
@@ -92,7 +93,7 @@ class RangeDownload {
         path,
         onReceiveProgress: createCallback(no),
         options: Options(
-          headers: {"range": "bytes=$start-$end"},
+          headers: headers.addAll({"range": "bytes=$start-$end"}),
         ),
         cancelToken: cancelToken,
       );
